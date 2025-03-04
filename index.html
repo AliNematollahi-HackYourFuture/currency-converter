@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Currency-Converter</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Currency Converter Application</h1>
+
+      <section>
+        <h2>Add A New Currency</h2>
+        <form>
+          <label for="new-currency-name">Currency Name</label>
+          <input
+            type="text"
+            id="new-currency-name"
+            placeholder="Enter Currency Name"
+          />
+          <label for="new-currency-rate">Rate (base on the "EUR")</label>
+          <input
+            type="number"
+            id="new-currency-rate"
+            min="0"
+            step="0.000001"
+            placeholder="Enter Currency Rate"
+          />
+          <button onclick="addCurrency(event)">Add Currency</button>
+          <p id="add-error" class="error"></p>
+        </form>
+      </section>
+
+      <section>
+        <h2>Currency Converter</h2>
+        <form>
+          <label for="first-currency-amount">First Currency Amount</label>
+          <input
+            type="number"
+            id="first-currency-amount"
+            min="0"
+            step="0.000001"
+            placeholder="Enter Amount"
+          />
+          <label for="first-currency-list">First Currency</label>
+          <select id="first-currency-list">
+            <option value="">Select Currency</option>
+            <option value="EUR">EUR</option>
+          </select>
+          <label for="second-currency-list">Second Currency</label>
+          <select id="second-currency-list">
+            <option value="">Select Currency</option>
+            <option value="EUR">EUR</option>
+          </select>
+          <button onclick="convert(event)">Convert</button>
+          <p id="result"></p>
+          <p id="convert-error" class="error"></p>
+        </form>
+      </section>
+
+      <section>
+        <form>
+          <h2>Change A Currency Rate</h2>
+          <label for="edit-currency-list">Currency</label>
+          <select id="edit-currency-list">
+            <option value="">Select Currency</option>
+          </select>
+          <label for="new-rate">New Rate</label>
+          <input
+            id="new-rate"
+            type="number"
+            min="0"
+            step="0.000001"
+            placeholder="Enter New Rate"
+          />
+          <button onclick="editCurrencyRate(event)">Change</button>
+          <p id="edit-error" class="error"></p>
+        </form>
+      </section>
+
+      <div class="message-container" id="message-container">
+        <div class="message-box" id="message-box">
+          <p class="message-text">
+            <span id="message-text"></span>
+            <img src="./square.png" />
+          </p>
+        </div>
+      </div>
+    </main>
+    <script src="./index.js"></script>
+  </body>
+</html>
