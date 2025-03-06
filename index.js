@@ -1,20 +1,23 @@
-const newCurrencyName = document.querySelector("#new-currency-name");
-const newCurrencyRate = document.querySelector("#new-currency-rate");
+const baseCurrencyName = document.querySelector("#base-currency-name");
+const targetCurrencyName = document.querySelector("#target-currency-name");
+const exchangeRate = document.querySelector("#exchange-rate");
 const firstCurrencyAmount = document.querySelector("#first-currency-amount");
 const firstCurrencyList = document.querySelector("#first-currency-list");
 const secondCurrencyList = document.querySelector("#second-currency-list");
 const result = document.querySelector("#result");
-const editCurrencyList = document.querySelector("#edit-currency-list");
 const newRate = document.querySelector("#new-rate");
 const messageContainer = document.querySelector("#message-container");
 messageContainer.style.display = "none";
 const messageText = document.querySelector("#message-text");
 const addError = document.querySelector("#add-error");
 const convertError = document.querySelector("#convert-error");
-const editError = document.querySelector("#edit-error");
+const questionContainer = document.querySelector("#question-container");
+questionContainer.style.display = "none";
+const questionText = document.querySelector("#question-text");
+const acceptBtn = document.querySelector("#accept-btn");
+const rejectBtn = document.querySelector("#reject-btn");
 
-let currencyRates = { rates: { EUR: 1 } };
-const currencyList = ["EUR"];
+const currencyRates = [];
 
 // Adding A New Currency
 
@@ -32,43 +35,139 @@ function setDate() {
 
 function addCurrency(event) {
   event.preventDefault();
-  const newCurrencyNameValue = newCurrencyName.value.toUpperCase();
-  if (currencyList.includes(newCurrencyNameValue)) {
-    ShowErrorMessage(newCurrencyName, addError, "The Currency already exists");
-  } else if (!newCurrencyNameValue) {
-    ShowErrorMessage(newCurrencyName, addError, "Invalid Currency Name");
-  } else if (Number(newCurrencyRate.value) <= 0) {
-    ShowErrorMessage(newCurrencyRate, addError, "Invalid Currency Rate");
-  } else {
-    currencyRates.timestamp = setDate().timestamp;
-    currencyRates.base = "EUR";
-    currencyRates.date = setDate().date;
-    currencyRates.rates[newCurrencyNameValue] = Number(newCurrencyRate.value);
 
-    updateCrrencySelectorList(newCurrencyNameValue, firstCurrencyList);
-    updateCrrencySelectorList(newCurrencyNameValue, secondCurrencyList);
-    updateCrrencySelectorList(newCurrencyNameValue, editCurrencyList);
+  const baseCurrencyNameValue = baseCurrencyName.value.toUpperCase();
+  const targetCurrencyNameValue = targetCurrencyName.value.toUpperCase();
 
-    currencyList.push(newCurrencyNameValue);
+  let isItNewCurrency = true;
+  let existedCurrencyIndex;
+
+  currencyRates.forEach((item, index) => {
+    if (item.base === baseCurrencyNameValue) {
+      isItNewCurrency = false;
+      existedCurrencyIndex = index;
+    }
+    if (
+      item.base === baseCurrencyNameValue &&
+      targetCurrencyNameValue in item.rates
+    ) {
+      setYesNoQuestionBox(
+        "The Exchange Rate Already Exists. Would You Like To Update It?!"
+      ).then((isAccepted) => {
+        if (isAccepted) {
+          item.rates[targetCurrencyNameValue] = Number(exchangeRate.value);
+          showSuccessMessage("Currency Rate Updated !!");
+          baseCurrencyName.value = "";
+          targetCurrencyName.value = "";
+          exchangeRate.value = "";
+        }
+      });
+    }
+  });
+
+  if (!baseCurrencyNameValue) {
+    ShowErrorMessage(baseCurrencyName, addError, "Invalid Currency Name");
+  } else if (!targetCurrencyNameValue) {
+    ShowErrorMessage(targetCurrencyName, addError, "Invalid Currency Name");
+  } else if (Number(exchangeRate.value) <= 0) {
+    ShowErrorMessage(exchangeRate, addError, "Invalid Currency Rate");
+  } else if (!isItNewCurrency) {
+    updateFirstCurrencySelectorList(baseCurrencyNameValue);
+    updateFirstCurrencySelectorList(targetCurrencyNameValue);
+
+    // updating the rates object
+    currencyRates[existedCurrencyIndex].rates[targetCurrencyNameValue] = Number(
+      exchangeRate.value
+    );
+    reverseCurrencyRateHandler(baseCurrencyNameValue, targetCurrencyNameValue);
 
     showSuccessMessage("Currency Added !!");
-    newCurrencyName.value = "";
-    newCurrencyRate.value = "";
+    baseCurrencyName.value = "";
+    targetCurrencyName.value = "";
+    exchangeRate.value = "";
+  } else {
+    updateFirstCurrencySelectorList(baseCurrencyNameValue);
+    updateFirstCurrencySelectorList(targetCurrencyNameValue);
+
+    // Adding new currency object
+    currencyRates.push({
+      timestamp: setDate().timestamp,
+      base: baseCurrencyNameValue,
+      date: setDate().date,
+      rates: {
+        [targetCurrencyNameValue]: Number(exchangeRate.value),
+      },
+    });
+
+    reverseCurrencyRateHandler(baseCurrencyNameValue, targetCurrencyNameValue);
+
+    showSuccessMessage("Currency Added !!");
+    baseCurrencyName.value = "";
+    targetCurrencyName.value = "";
+    exchangeRate.value = "";
   }
 }
 
-// Currency Converter
+function reverseCurrencyRateHandler(
+  baseCurrencyNameValue,
+  targetCurrencyNameValue
+) {
+  // checking for reverse currency rate
+  const reverseCurrencyReateIndex = currencyRates.findIndex((item) => {
+    return item.base === targetCurrencyNameValue;
+  });
 
-function updateCrrencySelectorList(newCurrency, CurrencySelectorList) {
-  if (!currencyList.includes(newCurrency)) {
+  if (reverseCurrencyReateIndex !== -1) {
+    // Update currency object for reverse currency rate
+    currencyRates[reverseCurrencyReateIndex].rates[baseCurrencyNameValue] =
+      1 / Number(exchangeRate.value);
+  } else {
+    // Adding new currency object for reverse currency rate
+    currencyRates.push({
+      timestamp: setDate().timestamp,
+      base: targetCurrencyNameValue,
+      date: setDate().date,
+      rates: {
+        [baseCurrencyNameValue]: 1 / Number(exchangeRate.value),
+      },
+    });
+  }
+}
+
+// setting the first currency list
+
+function updateFirstCurrencySelectorList(newCurrency) {
+  let isNew = true;
+  currencyRates.forEach((item) => {
+    if (item.base === newCurrency) {
+      isNew = false;
+    }
+  });
+  if (isNew) {
     const currencyName = document.createElement("option");
     currencyName.value = newCurrency;
     currencyName.innerText = newCurrency;
-    CurrencySelectorList.appendChild(currencyName);
-  } else {
-    console.error("Currency name validation error");
+    firstCurrencyList.appendChild(currencyName);
   }
 }
+
+// setting the second currency list according to chosen option in first currency list
+
+firstCurrencyList.addEventListener("change", () => {
+  secondCurrencyList.innerHTML = '<option value="">Select Currency</option>';
+  const availableCurrencyRates = currencyRates.find((item) => {
+    return item.base === firstCurrencyList.value;
+  })?.rates;
+
+  for (let currency in availableCurrencyRates) {
+    const currencyName = document.createElement("option");
+    currencyName.value = currency;
+    currencyName.innerText = currency;
+    secondCurrencyList.appendChild(currencyName);
+  }
+});
+
+// Currency Converter
 
 function convert(event) {
   event.preventDefault();
@@ -78,29 +177,15 @@ function convert(event) {
   } else {
     const firstCurrency = firstCurrencyList.value;
     const secondCurrency = secondCurrencyList.value;
-    const firstCurrencyRate = currencyRates.rates[firstCurrency];
-    const secondCurrencyRate = currencyRates.rates[secondCurrency];
-    const secondCurrencyAmount =
-      (firstCurrencyRate / secondCurrencyRate) *
-      Number(firstCurrencyAmount.value);
+    const rate = currencyRates.find((item) => item.base === firstCurrency)
+      .rates[secondCurrency];
+    const secondCurrencyAmount = rate * Number(firstCurrencyAmount.value);
+
     result.innerText = `${firstCurrencyAmount.value} of ${firstCurrency} is equal to ${secondCurrencyAmount} of ${secondCurrency}`;
   }
 }
 
-// Edit Currency Rate
-
-function editCurrencyRate(event) {
-  event.preventDefault();
-
-  if (newRate.value <= 0) {
-    ShowErrorMessage(newRate, editError, "Invalid Input");
-  } else {
-    currencyRates.rates[editCurrencyList.value] = Number(newRate.value);
-    showSuccessMessage("Currency Rate Changed !!");
-  }
-}
-
-// Showing message to user
+// Functions for Showing message to user
 
 function showSuccessMessage(message) {
   messageContainer.style.display = "block";
@@ -108,6 +193,22 @@ function showSuccessMessage(message) {
   setTimeout(() => {
     messageContainer.style.display = "none";
   }, 3000);
+}
+
+function setYesNoQuestionBox(question) {
+  questionContainer.style.display = "block";
+  questionText.innerText = question;
+
+  return new Promise((resolve) => {
+    acceptBtn.addEventListener("click", () => {
+      questionContainer.style.display = "none";
+      resolve(true);
+    });
+    rejectBtn.addEventListener("click", () => {
+      questionContainer.style.display = "none";
+      resolve(false);
+    });
+  });
 }
 
 function ShowErrorMessage(inputElement, messageElement, message) {
@@ -124,7 +225,7 @@ function removeErrorMessage(inputElement, messageElement) {
 
 // calling functions
 
-removeErrorMessage(newCurrencyName, addError);
-removeErrorMessage(newCurrencyRate, addError);
+removeErrorMessage(baseCurrencyName, addError);
+removeErrorMessage(targetCurrencyName, addError);
+removeErrorMessage(exchangeRate, addError);
 removeErrorMessage(firstCurrencyAmount, convertError);
-removeErrorMessage(newRate, editError);
