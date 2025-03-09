@@ -33,7 +33,7 @@
             step="0.000001"
             placeholder="Enter Exchange Rate"
           />
-          <button onclick="addCurrency(event)">Add</button>
+          <button id="add-currency-btn">Add</button>
           <p id="add-error" class="error"></p>
         </form>
       </section>
@@ -57,7 +57,7 @@
           <select id="second-currency-list">
             <option value="">Select Currency</option>
           </select>
-          <button onclick="convert(event)">Convert</button>
+          <button id="convert-btn">Convert</button>
           <p id="result"></p>
           <p id="convert-error" class="error"></p>
         </form>

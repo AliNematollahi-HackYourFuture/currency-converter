@@ -14,6 +14,8 @@ const convertError = document.querySelector("#convert-error");
 const questionContainer = document.querySelector("#question-container");
 questionContainer.style.display = "none";
 const questionText = document.querySelector("#question-text");
+const addCurrencyBtn = document.querySelector("#add-currency-btn");
+const convertBtn = document.querySelector("#convert-btn");
 const acceptBtn = document.querySelector("#accept-btn");
 const rejectBtn = document.querySelector("#reject-btn");
 
@@ -22,8 +24,8 @@ const currencyRates = [];
 // Adding A New Currency
 
 function setDate() {
-  const timestamp = Date.now();
   const currentDate = new Date();
+  const timestamp = currentDate.getTime();
   const day = currentDate.getDate();
   const month = currentDate.getMonth();
   const year = currentDate.getFullYear();
@@ -33,7 +35,7 @@ function setDate() {
   };
 }
 
-function addCurrency(event) {
+addCurrencyBtn.addEventListener("click", function addCurrency(event) {
   event.preventDefault();
 
   const baseCurrencyNameValue = baseCurrencyName.value.toUpperCase();
@@ -52,25 +54,31 @@ function addCurrency(event) {
       targetCurrencyNameValue in item.rates
     ) {
       setYesNoQuestionBox(
+        existedCurrencyIndex,
+        baseCurrencyNameValue,
+        targetCurrencyNameValue,
+        Number(exchangeRate.value),
         "The Exchange Rate Already Exists. Would You Like To Update It?!"
-      ).then((isAccepted) => {
-        if (isAccepted) {
-          item.rates[targetCurrencyNameValue] = Number(exchangeRate.value);
-          showSuccessMessage("Currency Rate Updated !!");
-          baseCurrencyName.value = "";
-          targetCurrencyName.value = "";
-          exchangeRate.value = "";
-        }
-      });
+      );
+      // .then((isAccepted) => {
+      //   if (isAccepted) {
+      //     item.rates[targetCurrencyNameValue] = Number(exchangeRate.value);
+      //     showSuccessMessage("Currency Rate Updated !!");
+      //     baseCurrencyName.value = "";
+      //     targetCurrencyName.value = "";
+      //     exchangeRate.value = "";
+      //   }
+      // });
     }
+    return
   });
 
   if (!baseCurrencyNameValue) {
-    ShowErrorMessage(baseCurrencyName, addError, "Invalid Currency Name");
+    showErrorMessage(baseCurrencyName, addError, "Invalid Currency Name");
   } else if (!targetCurrencyNameValue) {
-    ShowErrorMessage(targetCurrencyName, addError, "Invalid Currency Name");
+    showErrorMessage(targetCurrencyName, addError, "Invalid Currency Name");
   } else if (Number(exchangeRate.value) <= 0) {
-    ShowErrorMessage(exchangeRate, addError, "Invalid Currency Rate");
+    showErrorMessage(exchangeRate, addError, "Invalid Currency Rate");
   } else if (!isItNewCurrency) {
     updateFirstCurrencySelectorList(baseCurrencyNameValue);
     updateFirstCurrencySelectorList(targetCurrencyNameValue);
@@ -106,7 +114,7 @@ function addCurrency(event) {
     targetCurrencyName.value = "";
     exchangeRate.value = "";
   }
-}
+});
 
 function reverseCurrencyRateHandler(
   baseCurrencyNameValue,
@@ -169,11 +177,11 @@ firstCurrencyList.addEventListener("change", () => {
 
 // Currency Converter
 
-function convert(event) {
+convertBtn.addEventListener("click", function convert(event) {
   event.preventDefault();
 
   if (firstCurrencyAmount.value <= 0) {
-    ShowErrorMessage(firstCurrencyAmount, convertError, "Invalid Amount");
+    showErrorMessage(firstCurrencyAmount, convertError, "Invalid Amount");
   } else {
     const firstCurrency = firstCurrencyList.value;
     const secondCurrency = secondCurrencyList.value;
@@ -183,7 +191,7 @@ function convert(event) {
 
     result.innerText = `${firstCurrencyAmount.value} of ${firstCurrency} is equal to ${secondCurrencyAmount} of ${secondCurrency}`;
   }
-}
+});
 
 // Functions for Showing message to user
 
@@ -195,23 +203,50 @@ function showSuccessMessage(message) {
   }, 3000);
 }
 
-function setYesNoQuestionBox(question) {
+function setYesNoQuestionBox(index, base, target,exchangeRate, question) {
   questionContainer.style.display = "block";
   questionText.innerText = question;
 
-  return new Promise((resolve) => {
-    acceptBtn.addEventListener("click", () => {
-      questionContainer.style.display = "none";
-      resolve(true);
-    });
-    rejectBtn.addEventListener("click", () => {
-      questionContainer.style.display = "none";
-      resolve(false);
-    });
+  acceptBtn.addEventListener("click", () => {
+    questionContainer.style.display = "none";
+
+    // updating exchange rate for base currency
+    currencyRates[index].rates[target] = exchangeRate;
+
+    // updating exchange rate for target currency (reverse)
+    const targetCurrencyIndex = currencyRates.findIndex(
+      (object) => object.base === target
+    );
+    targetCurrencyIndex === -1
+      ? console.error("reverse currency adding fault")
+      : (currencyRates[targetCurrencyIndex].rates[base] =
+          1 / exchangeRate);
+
+          console.log("currencyRates", currencyRates);
+
+    showSuccessMessage("Currency Rate Updated !!");
+    baseCurrencyName.value = "";
+    targetCurrencyName.value = "";
+    exchangeRate.value = "";
   });
+
+  rejectBtn.addEventListener("click", () => {
+        questionContainer.style.display = "none";
+      });
+
+  // return new Promise((resolve) => {
+  //   acceptBtn.addEventListener("click", () => {
+  //     questionContainer.style.display = "none";
+  //     resolve(true);
+  //   });
+  //   rejectBtn.addEventListener("click", () => {
+  //     questionContainer.style.display = "none";
+  //     resolve(false);
+  //   });
+  // });
 }
 
-function ShowErrorMessage(inputElement, messageElement, message) {
+function showErrorMessage(inputElement, messageElement, message) {
   inputElement.style.borderColor = "red";
   messageElement.innerText = message;
 }
@@ -224,6 +259,8 @@ function removeErrorMessage(inputElement, messageElement) {
 }
 
 // calling functions
+
+//addCurrencyBtn.addEventListener('click',addCurrency(event))
 
 removeErrorMessage(baseCurrencyName, addError);
 removeErrorMessage(targetCurrencyName, addError);
