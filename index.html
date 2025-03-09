@@ -63,6 +63,41 @@
         </form>
       </section>
 
+      <section id="tabel-container">
+        <h2>Currencies Table</h2>
+        <table class="table">
+          <tr id="table-currency-names-row">
+            <th>Currency Name:</th>
+          </tr>
+          <tr id="table-listing-date-row">
+            <th>Listing Date:</th>
+          </tr>
+          <tr id="table-available-rates-row">
+            <th>Available Rates:</th>
+          </tr>
+        </table>       
+      </section>
+
+      <section>
+        <h2>Search For A Specific Exchange Rate</h2>
+        <div>
+          <label for="from-currency-input">From</label>
+          <input type="text" id="from-currency-input" placeholder="Enter Currency">
+        </div>
+        <div>
+          <img src="./change.png" class="change-img"  id="change-img">
+        </div>
+        <div>
+          <label for="to-currency-input">To</label>
+          <input type="text" id="to-currency-input" placeholder="Enter Currency">
+        </div>
+        <div>
+          <button id="search-btn">Search</button>
+        </div>
+        <p  id="search-error" class="error"></p>
+        <p id="search-result"></p>
+      </section>
+
       <div id="message-container" class="message-container">
         <div class="message-box">
           <p class="message-text">
