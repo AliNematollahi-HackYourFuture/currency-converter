@@ -42,3 +42,20 @@
 .error {
   color: red;
 }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px auto;
+}
+.table th,
+.table td {
+  border: 1px solid black;
+  height: 30px;
+  text-align: center;
+}
+
+.change-img{
+margin-left : 100px;
+cursor: pointer;
+}
