@@ -1,42 +1,40 @@
-const baseCurrencyName = document.querySelector("#base-currency-name");
-const targetCurrencyName = document.querySelector("#target-currency-name");
-const exchangeRate = document.querySelector("#exchange-rate");
-const firstCurrencyAmount = document.querySelector("#first-currency-amount");
-const firstCurrencyList = document.querySelector("#first-currency-list");
-const secondCurrencyList = document.querySelector("#second-currency-list");
-const result = document.querySelector("#result");
-const newRate = document.querySelector("#new-rate");
-const messageContainer = document.querySelector("#message-container");
+const baseCurrencyName = document.getElementById("base-currency-name");
+const targetCurrencyName = document.getElementById("target-currency-name");
+const exchangeRate = document.getElementById("exchange-rate");
+const firstCurrencyAmount = document.getElementById("first-currency-amount");
+const firstCurrencyList = document.getElementById("first-currency-list");
+const secondCurrencyList = document.getElementById("second-currency-list");
+const result = document.getElementById("result");
+const newRate = document.getElementById("new-rate");
+const messageContainer = document.getElementById("message-container");
 messageContainer.style.display = "none";
-const messageText = document.querySelector("#message-text");
-const addError = document.querySelector("#add-error");
-const convertError = document.querySelector("#convert-error");
-const questionContainer = document.querySelector("#question-container");
+const messageText = document.getElementById("message-text");
+const addError = document.getElementById("add-error");
+const convertError = document.getElementById("convert-error");
+const questionContainer = document.getElementById("question-container");
 questionContainer.style.display = "none";
-const questionText = document.querySelector("#question-text");
-const addCurrencyBtn = document.querySelector("#add-currency-btn");
-const convertBtn = document.querySelector("#convert-btn");
-const acceptBtn = document.querySelector("#accept-btn");
-const rejectBtn = document.querySelector("#reject-btn");
-const searchBtn = document.querySelector("#search-btn");
-const tabelContainer = document.querySelector("#tabel-container");
+const questionText = document.getElementById("question-text");
+const addCurrencyBtn = document.getElementById("add-currency-btn");
+const convertBtn = document.getElementById("convert-btn");
+const acceptBtn = document.getElementById("accept-btn");
+const rejectBtn = document.getElementById("reject-btn");
+const searchBtn = document.getElementById("search-btn");
+const tabelContainer = document.getElementById("tabel-container");
 tabelContainer.style.display = "none";
-const tableCurrencyNamesRow = document.querySelector(
-  "#table-currency-names-row"
+const tableCurrencyNamesRow = document.getElementById(
+  "table-currency-names-row"
 );
-const tableListingDateRow = document.querySelector("#table-listing-date-row");
-const tableAvailableRatesRow = document.querySelector(
-  "#table-available-rates-row"
+const tableListingDateRow = document.getElementById("table-listing-date-row");
+const tableAvailableRatesRow = document.getElementById(
+  "table-available-rates-row"
 );
-const fromCurrencyInput = document.querySelector("#from-currency-input");
-const toCurrencyInput = document.querySelector("#to-currency-input");
-const searchResult = document.querySelector("#search-result");
-const searchError = document.querySelector("#search-error");
-const changeImg = document.querySelector("#change-img");
+const fromCurrencyInput = document.getElementById("from-currency-input");
+const toCurrencyInput = document.getElementById("to-currency-input");
+const searchResult = document.getElementById("search-result");
+const searchError = document.getElementById("search-error");
+const changeImg = document.getElementById("change-img");
 
 const currencyRates = [];
-
-// Adding A New Currency
 
 function setDate() {
   const currentDate = new Date();
@@ -49,10 +47,10 @@ function setDate() {
     date: `${year}-${month + 1}-${day}`,
   };
 }
+ 
+// Adding currency exchange rate
 
-addCurrencyBtn.addEventListener("click", function (event) {
-  event.preventDefault();
-
+addCurrencyBtn.addEventListener("click", function () {
   const baseCurrencyNameValue = baseCurrencyName.value.toUpperCase();
   const targetCurrencyNameValue = targetCurrencyName.value.toUpperCase();
 
@@ -80,24 +78,33 @@ addCurrencyBtn.addEventListener("click", function (event) {
       targetCurrencyNameValue in item.rates
     ) {
       isItSameTarget = true;
-      setYesNoQuestionBox(
-        existedCurrencyIndex,
-        baseCurrencyNameValue,
-        targetCurrencyNameValue,
-        Number(exchangeRate.value),
-        "The Exchange Rate Already Exists. Would You Like To Update It?!"
-      );
+      if (Number(exchangeRate.value) > 0) {
+        setYesNoQuestionBox(
+          existedCurrencyIndex,
+          baseCurrencyNameValue,
+          targetCurrencyNameValue,
+          Number(exchangeRate.value),
+          "The Exchange Rate Already Exists. Would You Like To Update It?!"
+        );
+      }
       return;
     }
   });
 
+    // Checking invalid base currency value
   if (!baseCurrencyNameValue) {
     showErrorMessage(baseCurrencyName, addError, "Invalid Currency Name");
-  } else if (!targetCurrencyNameValue) {
+  } 
+  // Checking invalid target currency value
+  else if (!targetCurrencyNameValue) {
     showErrorMessage(targetCurrencyName, addError, "Invalid Currency Name");
-  } else if (Number(exchangeRate.value) <= 0) {
+  }
+  // Checking invalid exchange rate value
+  else if (Number(exchangeRate.value) <= 0) {
     showErrorMessage(exchangeRate, addError, "Invalid Currency Rate");
-  } else if (!isItNewCurrency && !isItSameTarget) {
+  } 
+  // Adding a new rate to existed currency (existed base, new target)
+  else if (!isItNewCurrency && !isItSameTarget) {
     updateFirstCurrencySelectorList(baseCurrencyNameValue);
     updateFirstCurrencySelectorList(targetCurrencyNameValue);
 
@@ -117,7 +124,9 @@ addCurrencyBtn.addEventListener("click", function (event) {
     baseCurrencyName.value = "";
     targetCurrencyName.value = "";
     exchangeRate.value = "";
-  } else if (isItNewCurrency) {
+  }
+  // Adding a new currency
+  else if (isItNewCurrency) {
     updateFirstCurrencySelectorList(baseCurrencyNameValue);
     updateFirstCurrencySelectorList(targetCurrencyNameValue);
 
@@ -212,9 +221,7 @@ firstCurrencyList.addEventListener("change", () => {
 
 // Currency Converter
 
-convertBtn.addEventListener("click", function (event) {
-  event.preventDefault();
-
+convertBtn.addEventListener("click", function () {
   if (firstCurrencyAmount.value <= 0) {
     showErrorMessage(firstCurrencyAmount, convertError, "Invalid Amount");
   } else {
@@ -353,17 +360,13 @@ function searchExchangeRate() {
     return CurrencyObject.base === fromCurrencyInputValue;
   });
 
-  if (objectIndex === -1) {
+  const exchangeRate = currencyRates[objectIndex].rates[toCurrencyInputValue];
+  if (objectIndex === -1 || !exchangeRate) {
     showErrorMessage(fromCurrencyInput, searchError, "Invalid Currency");
-  } else {
-    const exchangeRate = currencyRates[objectIndex].rates[toCurrencyInputValue];
-    if (!exchangeRate) {
-      showErrorMessage(toCurrencyInput, searchError, "Invalid Currency");
     } else {
       searchResult.innerText = `1 ${fromCurrencyInputValue} is equal to ${exchangeRate} ${toCurrencyInputValue}`;
     }
   }
-}
 
 searchBtn.addEventListener("click", () => {
   searchExchangeRate();

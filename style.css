@@ -2,7 +2,7 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.message-container {
+.modal {
   background-color: rgba(0, 0, 0, 0.726);
   position: absolute;
   top: 0;
@@ -12,7 +12,7 @@
   z-index: 1;
 }
 
-.message-box {
+.modal__box {
   background-color: white;
   width: 50%;
   height: 150px;
