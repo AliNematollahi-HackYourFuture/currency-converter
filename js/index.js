@@ -15,7 +15,7 @@ convertBtn.addEventListener("click", convert);
 searchBtn.addEventListener("click", searchExchangeRate);
 
 changeBtn.addEventListener("click", () => {
-  chacngeHandler();
+  changeHandler();
   searchExchangeRate();
 });
 

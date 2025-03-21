@@ -32,7 +32,7 @@ function setYesNoQuestionBox(index, base, target, newExchangeRate, question) {
       rate: newExchangeRate,
     };
 
-    updateTable("", "", changingRateObject);
+    changeRateInTable( changingRateObject);
 
     const changingReverseRateObject = {
       base: target,
@@ -40,7 +40,7 @@ function setYesNoQuestionBox(index, base, target, newExchangeRate, question) {
       rate: 1 / newExchangeRate,
     };
 
-    updateTable("", "", changingReverseRateObject);
+    changeRateInTable(changingReverseRateObject);
 
     showSuccessMessage("Currency Rate Updated !!");
     baseCurrencyName.value = "";
@@ -62,8 +62,8 @@ function setAlertYesNoQuestionBox(index, newRate, question) {
 
     alerts[index].rate = newRate;
     showSuccessMessage("The Alert Reset With New Rate !!");
-    setAlertTable(true);
-    setAlertInterval(true);
+    setAlertTable();
+    setAlertInterval();
 
     alertBaseList.value = "";
     alertTargetList.value = "";

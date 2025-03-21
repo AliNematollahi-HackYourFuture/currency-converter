@@ -16,7 +16,7 @@ function searchExchangeRate() {
   }
 }
 
-function chacngeHandler() {
+function changeHandler() {
   const tempVariable = fromCurrencyInput.value;
 
   fromCurrencyInput.value = toCurrencyInput.value;

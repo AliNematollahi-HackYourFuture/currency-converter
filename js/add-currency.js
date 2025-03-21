@@ -60,7 +60,7 @@ function addingCurrencyHandler() {
     currencyRates[existedCurrencyIndex].rates[targetCurrencyNameValue] = Number(
       exchangeRate.value
     );
-    updateTable("", {
+    updateCurrencyInTable({
       base: baseCurrencyNameValue,
       target: targetCurrencyNameValue,
       rate: Number(exchangeRate.value),
@@ -91,7 +91,7 @@ function addingCurrencyHandler() {
     currencyRates.push(currencyObject);
 
     tabelContainer.style.display = "block";
-    updateTable(currencyObject);
+    displayNewCurrencyInTable(currencyObject);
     reverseCurrencyRateHandler(baseCurrencyNameValue, targetCurrencyNameValue);
 
     showSuccessMessage("Currency Added !!");
@@ -114,7 +114,7 @@ function reverseCurrencyRateHandler(
     // Update currency object for reverse currency rate
     currencyRates[reverseCurrencyReateIndex].rates[baseCurrencyNameValue] =
       1 / Number(exchangeRate.value);
-    updateTable("", {
+    updateCurrencyInTable( {
       base: targetCurrencyNameValue,
       target: baseCurrencyNameValue,
       rate: 1 / Number(exchangeRate.value),
@@ -130,7 +130,7 @@ function reverseCurrencyRateHandler(
       },
     };
     currencyRates.push(currencyObject);
-    updateTable(currencyObject);
+    displayNewCurrencyInTable(currencyObject);
   }
 }
 

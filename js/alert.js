@@ -1,16 +1,19 @@
-let IsGettingAlertsucceed = false;
+let isGettingAlertsucceed = false;
 
 function alertHandler() {
   getAlert();
-  setAlertTable(IsGettingAlertsucceed);
-  setAlertInterval(IsGettingAlertsucceed);
+
+  if (isGettingAlertsucceed) {
+    setAlertTable();
+    setAlertInterval();
+  }
 }
 
 function getAlert() {
   const alertRateValue = Number(alertRate.value);
 
-  // change IsGettingAlertsucceed value to false if it is true from previous time
-  IsGettingAlertsucceed = false;
+  // change isGettingAlertsucceed value to false if it is true from previous time
+  isGettingAlertsucceed = false;
 
   let isItNewAlert = true;
   let alertIndex;
@@ -43,7 +46,7 @@ function getAlert() {
       target: alertTargetList.value,
       rate: alertRateValue,
     });
-    IsGettingAlertsucceed = true;
+    isGettingAlertsucceed = true;
 
     showSuccessMessage(" Alert Set !!");
 
@@ -53,42 +56,40 @@ function getAlert() {
   }
 }
 
-function setAlertInterval(isValid) {
-  if (isValid) {
-    for (const key of intervalMap.keys()) {
-      stopInterval(key);
-    }
-
-    alerts.forEach((alertItem) => {
-      const currentRate = currencyRates.find((obj) => {
-        return obj.base === alertItem.base;
-      }).rates[alertItem.target];
-      const rowId = `${alertItem.base}-${alertItem.target}-row`;
-      const alertRow = document.getElementById(rowId);
-      const intervalId = `${alertItem.base}-${alertItem.target}-interval`;
-      if (alertItem.rate > currentRate) {
-        startInterval(
-          intervalId,
-          5000,
-          true,
-          alertItem.base,
-          alertItem.target,
-          alertItem.rate,
-          alertRow
-        );
-      } else if (alertItem.rate < currentRate) {
-        startInterval(
-          intervalId,
-          5000,
-          false,
-          alertItem.base,
-          alertItem.target,
-          alertItem.rate,
-          alertRow
-        );
-      }
-    });
+function setAlertInterval() {
+  for (const key of intervalMap.keys()) {
+    stopInterval(key);
   }
+
+  alerts.forEach((alertItem) => {
+    const currentRate = currencyRates.find((obj) => {
+      return obj.base === alertItem.base;
+    }).rates[alertItem.target];
+    const rowId = `${alertItem.base}-${alertItem.target}-row`;
+    const alertRow = document.getElementById(rowId);
+    const intervalId = `${alertItem.base}-${alertItem.target}-interval`;
+    if (alertItem.rate > currentRate) {
+      startInterval(
+        intervalId,
+        5000,
+        true,
+        alertItem.base,
+        alertItem.target,
+        alertItem.rate,
+        alertRow
+      );
+    } else if (alertItem.rate < currentRate) {
+      startInterval(
+        intervalId,
+        5000,
+        false,
+        alertItem.base,
+        alertItem.target,
+        alertItem.rate,
+        alertRow
+      );
+    }
+  });
 }
 
 function startInterval(
@@ -132,10 +133,10 @@ function stopInterval(id) {
   }
 }
 
-function setAlertTable(isValid) {
+function setAlertTable() {
   if (alerts.length <= 0) {
     alertTableContainer.style.display = "none";
-  } else if (isValid) {
+  } else {
     alertTableContainer.style.display = "block";
     const alertTable = document.createElement("table");
     alertTable.classList.add("table");
@@ -173,5 +174,5 @@ function removeAlert(event) {
   alerts = alerts.filter((alertItem) => {
     return !(alertItem.base === base && alertItem.target === target);
   });
-  setAlertTable(true);
+  setAlertTable();
 }
