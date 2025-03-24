@@ -69,58 +69,41 @@ function setAlertInterval() {
     const alertRow = document.getElementById(rowId);
     const intervalId = `${alertItem.base}-${alertItem.target}-interval`;
     if (alertItem.rate > currentRate) {
-      startInterval(
-        intervalId,
-        5000,
-        true,
-        alertItem.base,
-        alertItem.target,
-        alertItem.rate,
-        alertRow
-      );
+      startIncrementalRateInterval(intervalId, 5000, alertItem, alertRow);
     } else if (alertItem.rate < currentRate) {
-      startInterval(
-        intervalId,
-        5000,
-        false,
-        alertItem.base,
-        alertItem.target,
-        alertItem.rate,
-        alertRow
-      );
+      startDecreasingRateInterval(intervalId, 5000, alertItem, alertRow);
     }
   });
 }
 
-function startInterval(
-  id,
-  time,
-  isIncrementalRate,
-  base,
-  target,
-  rate,
-  alertRow
-) {
+function startIncrementalRateInterval(id, time, alertItem, alertRow) {
   const intervalId = setInterval(() => {
     const newCurrentRate = currencyRates.find((obj) => {
-      return obj.base === base;
-    }).rates[target];
-    if (isIncrementalRate) {
-      if (newCurrentRate >= rate) {
-        alertRow.style.backgroundColor = "rgb(135, 223, 146)";
-        alert(
-          `You reached your wish rate. Now 1 ${base} is ${newCurrentRate} ${target}`
-        );
-        stopInterval(id);
-      }
-    } else {
-      if (newCurrentRate <= rate) {
-        alertRow.style.backgroundColor = "rgb(135, 223, 146)";
-        alert(
-          `You reached your wish rate. Now 1 ${base} is ${newCurrentRate} ${target}`
-        );
-        stopInterval(id);
-      }
+      return obj.base === alertItem.base;
+    }).rates[alertItem.target];
+    if (newCurrentRate >= alertItem.rate) {
+      alertRow.style.backgroundColor = "rgb(135, 223, 146)";
+      alert(
+        `You reached your wish rate. Now 1 ${alertItem.base} is ${newCurrentRate} ${alertItem.target}`
+      );
+      stopInterval(id);
+    }
+  }, time);
+  intervalMap.set(id, intervalId);
+}
+
+function startDecreasingRateInterval(id, time, alertItem, alertRow) {
+  const intervalId = setInterval(() => {
+    const newCurrentRate = currencyRates.find((obj) => {
+      return obj.base === alertItem.base;
+    }).rates[alertItem.target];
+
+    if (newCurrentRate <= alertItem.rate) {
+      alertRow.style.backgroundColor = "rgb(135, 223, 146)";
+      alert(
+        `You reached your wish rate. Now 1 ${alertItem.base} is ${newCurrentRate} ${alertItem.target}`
+      );
+      stopInterval(id);
     }
   }, time);
   intervalMap.set(id, intervalId);
