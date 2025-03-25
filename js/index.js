@@ -1,3 +1,7 @@
+// Fetching data from API, update table and selectors
+
+displayData();
+
 // Adding currency exchange rate
 
 addCurrencyBtn.addEventListener("click", addingCurrencyHandler);

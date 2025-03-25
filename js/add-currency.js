@@ -148,14 +148,14 @@ function setDate() {
 
 // setting the first currency list
 
-function updateFirstCurrencySelectorList(newCurrency) {
+function updateFirstCurrencySelectorList(newCurrency,isFetchedData) {
   let isNew = true;
   currencyRates.forEach((item) => {
     if (item.base === newCurrency) {
       isNew = false;
     }
   });
-  if (isNew) {
+  if (isNew || isFetchedData) {
     // Adding option for first select list in convert part
     const currencyName = document.createElement("option");
     currencyName.value = newCurrency;
