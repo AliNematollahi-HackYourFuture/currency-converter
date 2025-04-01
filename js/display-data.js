@@ -3,15 +3,12 @@ function displayData() {
   fetch(
     "https://raw.githubusercontent.com/AliNematollahi-HackYourFuture/AliNematollahi-HackYourFuture.github.io/refs/heads/main/data/currency-rates.json"
   )
-    .then((response) => response.text())
+    .then((response) => response.json())
     .then((data) => {
-      const myData = JSON.parse(data);
-
-      myData.currencyRates.forEach((currencyObject) => {
+      data.currencyRates.forEach((currencyObject) => {
         currencyRates.push(currencyObject);
       });
-    })
-    .then(() => {
+
       currencyRates.forEach((newCurrencyObject) => {
         // Display currencies table
         tabelContainer.style.display = "block";
