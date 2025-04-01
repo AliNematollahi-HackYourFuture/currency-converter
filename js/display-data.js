@@ -1,11 +1,14 @@
-function displayData() {
-  // Get data from API
-  fetch(
-    "https://raw.githubusercontent.com/AliNematollahi-HackYourFuture/AliNematollahi-HackYourFuture.github.io/refs/heads/main/data/currency-rates.json"
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      data.currencyRates.forEach((currencyObject) => {
+async function displayData() {
+  try {
+    // Get data from API
+    const data = await fetch(
+      "https://raw.githubusercontent.com/AliNematollahi-HackYourFuture/AliNematollahi-HackYourFuture.github.io/refs/heads/main/data/currency-rates.json"
+    );
+
+    const myData = await data.json();
+
+    if (testGettingData(myData)) {
+      myData.currencyRates.forEach((currencyObject) => {
         currencyRates.push(currencyObject);
       });
 
@@ -17,5 +20,8 @@ function displayData() {
         // Update selectors in converter and alert part
         updateFirstCurrencySelectorList(newCurrencyObject.base, true);
       });
-    });
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }
