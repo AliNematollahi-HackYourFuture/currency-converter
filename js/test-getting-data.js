@@ -6,17 +6,18 @@ function testGettingData(data) {
     logError("invalid data, unable to get data.currencyRates");
     return false;
   } else {
-    data.currencyRates.forEach((currencyObject, index) => {
+    for (let i = 0; i < data.currencyRates.length; i++) {
       if (
-        !currencyObject.base ||
-        !currencyObject.rates ||
-        !currencyObject.date ||
-        !currencyObject.timestamp
+        !data.currencyRates[i].base ||
+        !data.currencyRates[i].rates ||
+        !data.currencyRates[i].date ||
+        !data.currencyRates[i].timestamp
       ) {
-        logError(`invalid data on index '${index}'`);
+        logError(`invalid data on index '${i}'`);
         return false;
       }
-    });
+    }
+
     return true;
   }
 }
