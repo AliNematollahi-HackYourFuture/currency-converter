@@ -2,11 +2,11 @@
 
 function displayNewCurrencyInTable(newCurrencyObject) {
   // Filling table cells with new currency
-  const currencyNameCell = document.createElement("td");
+  const currencyNameCell = document.createElement("th");
   currencyNameCell.innerText = newCurrencyObject.base;
   tableCurrencyNamesRow.appendChild(currencyNameCell);
 
-  const listingDateCell = document.createElement("td");
+  const listingDateCell = document.createElement("th");
   listingDateCell.innerText = newCurrencyObject.date;
   tableListingDateRow.appendChild(listingDateCell);
 
@@ -18,7 +18,7 @@ function displayNewCurrencyInTable(newCurrencyObject) {
 
   for (let rate in newCurrencyObject.rates) {
     const availableRateItem = document.createElement("li");
-    availableRateItem.innerText = `${rate}: ${newCurrencyObject.rates[rate]}`;
+    availableRateItem.innerText = `${rate}: ${customRound(newCurrencyObject.rates[rate])}`;
 
     // creating dynamic id to use for changing rate cases
     availableRateItem.id = `${newCurrencyObject.base}-${rate}-exchange-rate`;
@@ -38,12 +38,20 @@ function updateCurrencyInTable(updatingObject) {
   // creating dynamic id to use for changing rate cases
   availableRateItem.id = `${updatingObject.base}-${updatingObject.target}-exchange-rate`;
 
-  availableRateItem.innerText = `${updatingObject.target}: ${updatingObject.rate}`;
+  availableRateItem.innerText = `${updatingObject.target}: ${customRound(updatingObject.rate) }`;
   availableRatesList.appendChild(availableRateItem);
 }
 
 function changeRateInTable(changingRateObject){
   const id = `${changingRateObject.base}-${changingRateObject.target}-exchange-rate`;
   const rateToChange = document.getElementById(id);
-  rateToChange.innerText = `${changingRateObject.target}: ${changingRateObject.rate}`;
+  rateToChange.innerText = `${changingRateObject.target}: ${customRound(changingRateObject.rate)}`;
+}
+
+function customRound(num) {
+  if ( num < 1 ) {
+    return Number(num.toPrecision(2));  // Keep 2 significant digits
+  } else {
+    return Number(num.toFixed(2));      // Keep 2 decimal places
+  }
 }

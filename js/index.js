@@ -1,9 +1,30 @@
-// Fetching data from API, update table and selectors
+// Fetching data from API, calculate rates, update table and selectors
 
-displayData();
+getData().then((data) => {
+  if (data) {
+    calculateOtherRates(data);
+    displayData();
+  }
+});
+
+// side bar menu selectMenuItem
+
+menuItems.forEach((item) => {
+  item.addEventListener("click", (event) => {
+    selectMenuItem(event);
+  });
+});
+
+//
+
+closeBtn.addEventListener('click',()=>{
+  announcementContainer.style.display = "none"
+})
+
+// request
+requestRateBtn.addEventListener("click", requestCurrencyRate);
 
 // Adding currency exchange rate
-
 addCurrencyBtn.addEventListener("click", addingCurrencyHandler);
 
 // setting the second currency list according to chosen option in first currency list

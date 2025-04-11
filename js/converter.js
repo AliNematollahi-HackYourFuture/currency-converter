@@ -10,6 +10,7 @@ function convert() {
       .rates[secondCurrency];
     const secondCurrencyAmount = rate * Number(firstCurrencyAmount.value);
 
-    result.innerText = `${firstCurrencyAmount.value} of ${firstCurrency} is equal to ${secondCurrencyAmount} of ${secondCurrency}`;
+    result.style.display = "block";
+    result.innerText = `${firstCurrencyAmount.value} ${firstCurrency} is equal to ${customRound(secondCurrencyAmount)} ${secondCurrency}`;
   }
 }
