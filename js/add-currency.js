@@ -6,7 +6,7 @@ function addingCurrencyHandler() {
   let isItSameTarget = false;
   let existedCurrencyIndex;
 
-  if (baseCurrencyNameValue === targetCurrencyNameValue) {
+  if (baseCurrencyNameValue && targetCurrencyNameValue &&( baseCurrencyNameValue === targetCurrencyNameValue)) {
     showErrorMessage(
       targetCurrencyName,
       addError,
@@ -90,7 +90,6 @@ function addingCurrencyHandler() {
 
     currencyRates.push(currencyObject);
 
-    tabelContainer.style.display = "block";
     displayNewCurrencyInTable(currencyObject);
     reverseCurrencyRateHandler(baseCurrencyNameValue, targetCurrencyNameValue);
 

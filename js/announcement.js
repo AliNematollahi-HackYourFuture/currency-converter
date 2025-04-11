@@ -23,20 +23,20 @@ function announcementHandler() {
     openningTime - now > 30 * 60 * 1000 ||
     now > closingTime
   ) {
-    announcementContainer.innerHTML =
+    announcementText.innerHTML =
       "The Market Is Closed Now. Working Time: Weekdays At 09:00-17:00";
-    announcementContainer.style.border = "2px solid red";
+    announcementText.style.color = "red";
   } else if (openningTime - now > 0 && openningTime - now < 30 * 60 * 1000) {
-    announcementContainer.innerHTML =
+    announcementText.innerHTML =
       "The Market Will Open Soon. Working Time: Weekdays At 09:00-17:00";
-    announcementContainer.style.border = "2px solid orange";
+    announcementText.style.color = "orange";
   } else if (closingTime - now > 0 && closingTime - now < 30 * 60 * 1000) {
-    announcementContainer.innerHTML =
+    announcementText.innerHTML =
       "The Market Will close Soon. Working Time: Weekdays At 09:00-17:00";
-    announcementContainer.style.border = "2px solid orange";
+    announcementText.style.color = "orange";
   } else if (now > openningTime && now < closingTime) {
-    announcementContainer.innerHTML =
+    announcementText.innerHTML =
       "The Market Is Open Now. Working Time: Weekdays At 09:00-17:00";
-    announcementContainer.style.border = "2px solid green";
+    announcementText.style.color = "green";
   }
 }

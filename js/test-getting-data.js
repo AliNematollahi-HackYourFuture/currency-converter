@@ -2,22 +2,16 @@ function testGettingData(data) {
   if (!data) {
     logError("unable to get data");
     return false;
-  } else if (!data.currencyRates) {
-    logError("invalid data, unable to get data.currencyRates");
-    return false;
   } else {
-    for (let i = 0; i < data.currencyRates.length; i++) {
       if (
-        !data.currencyRates[i].base ||
-        !data.currencyRates[i].rates ||
-        !data.currencyRates[i].date ||
-        !data.currencyRates[i].timestamp
+        !data.base ||
+        !data.rates ||
+        !data.date ||
+        !data.timestamp
       ) {
-        logError(`invalid data on index '${i}'`);
+        logError(`invalid data`);
         return false;
       }
-    }
-
     return true;
   }
 }

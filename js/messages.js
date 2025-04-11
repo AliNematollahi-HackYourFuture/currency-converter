@@ -76,13 +76,18 @@ function setAlertYesNoQuestionBox(index, newRate, question) {
 }
 
 function showErrorMessage(inputElement, messageElement, message) {
-  inputElement.style.borderColor = "red";
+  if(inputElement){
+    inputElement.style.border = "3px solid red";
+    inputElement.style.outline  = "2px solid white";
+  }
   messageElement.innerText = message;
 }
 
 function removeErrorMessage(inputElement, messageElement) {
   inputElement.addEventListener("focus", () => {
-    inputElement.style.borderColor = "black";
+    inputElement.style.border = "none";
+    inputElement.style.outline  = "none";
+
     messageElement.innerText = "";
   });
 }
